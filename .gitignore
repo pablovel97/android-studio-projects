@@ -1,0 +1,23 @@
+# Gradle generated files & caches
+.gradle/
+build/
+app/build/
+.externalNativeBuild/
+.cxx/
+
+# Local configuration file (SDK paths, local properties)
+local.properties
+
+# IntelliJ / Android Studio project configuration
+# Ignoring the entire .idea folder is recommended over picking individual files
+.idea/
+*.iml
+
+# Captures and builds
+/captures
+*.apk
+*.aar
+
+# OS generated files
+.DS_Store
+Thumbs.db
