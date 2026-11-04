@@ -9,7 +9,6 @@ app/build/
 local.properties
 
 # IntelliJ / Android Studio project configuration
-# Ignoring the entire .idea folder is recommended over picking individual files
 .idea/
 *.iml
 
