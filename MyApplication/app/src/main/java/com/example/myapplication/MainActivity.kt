@@ -60,7 +60,7 @@ fun PantallaPedido() {
         suplementoLeche,
         suplementoLlevar)
 
-    // El enunciado declara 5 filas.
+    // El enunciado declara 7 filas.
     // Las incluimos todas ordenadas dentro de una columna principal:
     Column(modifier = Modifier.padding(35.dp)) {
 
@@ -119,6 +119,7 @@ fun PantallaPedido() {
         Row(modifier = Modifier.padding(2.dp)) {
             Column(modifier = Modifier.padding(2.dp)) {
 
+                // Casilla para leche vegetal:
                 Row() {
                     MiTexto("Leche vegetal (+0,40€)")
                     MiCheck(
@@ -127,14 +128,17 @@ fun PantallaPedido() {
                     )
                 }
 
+                // Casilla para añadir extra de azúcar:
                 Row() {
                     MiTexto("Extra azúcar (+0,00€)")
                     MiCheck(
                         suplementoAzucar,
                         alMarcar = { suplementoAzucar = it }
+                    // Pedir aclarar el funcionamiento de la palabra reservada "it" en clase.
                     )
                 }
 
+                // Switch para pedir para llevar o no:
                 Row() {
                     MiTexto("Para llevar (+0,20€)")
                     MiSwitch (
@@ -156,7 +160,7 @@ fun PantallaPedido() {
                 MiBoton(
                     "-",
                     alPulsar = {
-                        if (cantidad > 1)
+                        if (cantidad > 1) // Se limita el mínimo al restar
                             cantidad -= 1
                     }
                 )
@@ -168,7 +172,7 @@ fun PantallaPedido() {
                 MiBoton(
                     "+",
                     alPulsar = {
-                        if (cantidad < 10)
+                        if (cantidad < 10) // Se limita el máximo para sumar
                         cantidad += 1
                     }
                 )
@@ -176,7 +180,7 @@ fun PantallaPedido() {
             }
         }
 
-        // Fila 6: Resumen
+        // Fila 6: Resumen global
         Row(modifier = Modifier.padding(6.dp)) {
 
             // Card para mostrar a tiempo real el resumen de todo el pedido:
@@ -195,7 +199,7 @@ fun PantallaPedido() {
         // Fila 7: Reset / Limpiar
         Row(modifier = Modifier.padding(6.dp)) {
 
-            // Botón para limpiar todo el contenido actual
+            // Botón para limpiar todo el contenido actual:
             MiBoton(
                 "Limpiar",
                 alPulsar = {
@@ -293,6 +297,7 @@ fun CalcularTotal(
     vegetal: Boolean,
     llevar: Boolean
 ): Float {
+    // Se declaran variables y valores necesarios para esta función de cáclulo:
     var precioUnitario: Float = 0.00f
     val precioCafe: Float = 1.50f
     val precioTe: Float = 1.30f
@@ -306,6 +311,7 @@ fun CalcularTotal(
     var precioTamano: Float = 0.00f
     var precioSuplementos: Float = 0.00f
 
+    // Se asgina el precio según el producto seleccionado en la funcion principal:
     precioUnitario = when(producto) {
         "Café" -> precioCafe
         "Té" -> precioTe
@@ -313,6 +319,7 @@ fun CalcularTotal(
         else -> 0.0f
     }
 
+    // Se aplica el suplemento del tamaño
     precioTamano = when(tamano) {
         "S" -> precioTamano + suplementoPeque
         "M" -> precioTamano + suplementoMediano
@@ -321,12 +328,15 @@ fun CalcularTotal(
 
     }
 
+    // Se suma el suplemento si es true:
     if (vegetal)
         precioSuplementos += suplementoLecheVegetal
 
+    // Se suma el suplemento si es true:
     if (llevar)
         precioSuplementos += suplementoParaLlevar
 
+    // Se suma todo para devolver un total final:
     var precioFinal = (precioUnitario + precioTamano + precioSuplementos) * cantidad
 
     return precioFinal
