@@ -14,6 +14,9 @@ import androidx.compose.foundation.layout.fitInside
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
@@ -26,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -121,30 +125,30 @@ fun PantallaPedido() {
 
                 // Casilla para leche vegetal:
                 Row() {
-                    MiTexto("Leche vegetal (+0,40€)")
                     MiCheck(
                         suplementoLeche,
                         alMarcar = { suplementoLeche = it }
                     )
+                    MiTexto("Leche vegetal (+0,40€)")
                 }
 
                 // Casilla para añadir extra de azúcar:
                 Row() {
-                    MiTexto("Extra azúcar (+0,00€)")
                     MiCheck(
                         suplementoAzucar,
                         alMarcar = { suplementoAzucar = it }
                     // Pedir aclarar el funcionamiento de la palabra reservada "it" en clase.
                     )
+                    MiTexto("Extra azúcar (+0,00€)")
                 }
 
                 // Switch para pedir para llevar o no:
                 Row() {
-                    MiTexto("Para llevar (+0,20€)")
                     MiSwitch (
                         suplementoLlevar,
                         alMarcar = { suplementoLlevar = it }
                     )
+                    MiTexto("Para llevar (+0,20€)")
                 }
 
             }
@@ -201,7 +205,7 @@ fun PantallaPedido() {
 
             // Botón para limpiar todo el contenido actual:
             MiBoton(
-                "Limpiar",
+                "Reiniciar pedido",
                 alPulsar = {
                     nombreCliente = ""
                     cantidad = 1
@@ -229,10 +233,12 @@ fun CampoEditable(texto: String, alEditar: (String) -> Unit, etiqueta: String) {
 fun MiBoton(accion: String, alPulsar: () -> Unit) {
     OutlinedButton(
         modifier = Modifier.padding(6.dp),
-        onClick = alPulsar
-    ) {
-        Text(accion)
-    }
+        onClick = {
+            alPulsar()
+        }
+        ) {
+            Text(accion)
+        }
 }
 
 @Composable
