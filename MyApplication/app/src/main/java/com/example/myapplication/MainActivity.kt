@@ -1,29 +1,22 @@
 package com.example.myapplication
 
+import android.annotation.SuppressLint
+import android.graphics.Paint
 import android.os.Bundle
-import android.widget.Button
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.fitInside
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
@@ -47,6 +39,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun PantallaPedido() {
     // Variables y constantes:
@@ -63,10 +56,15 @@ fun PantallaPedido() {
         tamano,
         suplementoLeche,
         suplementoLlevar)
+    var confirmado: Boolean by remember { mutableStateOf(false) }
 
     // El enunciado declara 7 filas.
     // Las incluimos todas ordenadas dentro de una columna principal:
-    Column(modifier = Modifier.padding(35.dp)) {
+    Column(
+        modifier = Modifier.padding(35.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
         // Fila 1: Nombre Cliente
         Row(modifier = Modifier.padding(6.dp)) {
@@ -99,7 +97,7 @@ fun PantallaPedido() {
         }
 
         // Fila 3: Tamaño
-        Row(modifier = Modifier.padding(6.dp)) {
+        Row(modifier = Modifier.padding(3.dp)) {
             Row() {
 
                 // Botón para pequeño
@@ -156,7 +154,7 @@ fun PantallaPedido() {
         }
 
         // Fila 5: Cantidad pedida
-        Row(modifier = Modifier.padding(6.dp)) {
+        Row(modifier = Modifier.padding(3.dp)) {
             // Tenemos 3 columnas (boton - texto - boton)
             Row() {
 
@@ -185,7 +183,7 @@ fun PantallaPedido() {
         }
 
         // Fila 6: Resumen global
-        Row(modifier = Modifier.padding(6.dp)) {
+        Row(modifier = Modifier.padding(3.dp)) {
 
             // Card para mostrar a tiempo real el resumen de todo el pedido:
             MiResumen(
@@ -196,7 +194,8 @@ fun PantallaPedido() {
                 suplementoLeche,
                 suplementoAzucar,
                 suplementoLlevar,
-                total
+                String.format("%.2f", total),
+                confirmado
             )
         }
 
@@ -214,6 +213,13 @@ fun PantallaPedido() {
                     suplementoLeche = false
                     suplementoAzucar = false
                     suplementoLlevar = false
+                    confirmado = false
+                })
+
+            MiBoton(
+                "Confirmar pedido",
+                alPulsar = {
+                    confirmado = !confirmado
                 })
         }
 
@@ -246,7 +252,7 @@ fun MiCheck (elemento: Boolean, alMarcar: (Boolean) -> Unit) {
     Checkbox(
         checked = elemento,
         onCheckedChange = alMarcar,
-        modifier = Modifier.padding(6.dp),
+        modifier = Modifier.padding(2.dp),
         enabled = true
     )
 }
@@ -256,7 +262,7 @@ fun MiSwitch (elemento: Boolean, alMarcar: (Boolean) -> Unit) {
     Switch(
         checked = elemento,
         onCheckedChange = alMarcar,
-        modifier = Modifier.padding(6.dp)
+        modifier = Modifier.padding(2.dp)
     )
 }
 
@@ -277,7 +283,8 @@ fun MiResumen(
     vegetal: Boolean,
     azucar: Boolean,
     llevar: Boolean,
-    total: Float
+    total: String,
+    confirmado: Boolean
 ) {
     OutlinedCard(modifier = Modifier.fillMaxWidth()) {
         Text(
@@ -291,6 +298,13 @@ fun MiResumen(
             Para llevar: ${if (llevar) "Sí (+0,20€)" else "No"}
             
             Total: $total€
+            ${if (confirmado) 
+                """
+                Pedido registrado correctamente
+                para $cliente.
+                """
+            else "-"
+            }
         """
         )
     }
