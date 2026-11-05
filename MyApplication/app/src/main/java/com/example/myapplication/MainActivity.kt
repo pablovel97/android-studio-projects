@@ -219,6 +219,7 @@ fun PantallaPedido() {
             MiBoton(
                 "Confirmar pedido",
                 alPulsar = {
+                    if (!nombreCliente.equals("") && total > 0.00f)
                     confirmado = !confirmado
                 })
         }
@@ -299,10 +300,10 @@ fun MiResumen(
             
             Total: $total€
             ${if (confirmado) 
-                """
-                Pedido registrado correctamente
-                para $cliente.
-                """
+            """
+            Pedido registrado correctamente
+            para $cliente.
+            """
             else "-"
             }
         """
