@@ -4,26 +4,23 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.dataclases.ui.theme.DataClasesTheme
 
 class MainActivity : ComponentActivity() {
@@ -31,15 +28,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            DataClasesTheme {
-
-                PantallaPedido()
-
-            }
+            PantallaPedido()
         }
     }
 }
 
+// Modelo de datos que representa cada artículo de la cafetería
 data class Productos(
     val producto: String,
     val precio: Double,
@@ -49,43 +43,61 @@ data class Productos(
 @Composable
 fun PantallaPedido() {
 
-
-    // Variables:
+    // Estado observable: guarda la selección actual y dispara la recomposición al cambiar
     var seleccion by remember { mutableStateOf("Ninguno") }
 
+    // Fuente de datos con el catálogo de productos a mostrar
     var listaProductos = listOf<Productos>(
-        Productos("Café", 1.50, "Café normal"),
-        Productos("Napolitana", 2.50, "Napolitana de chocolate"),
-        Productos("Té", 2.80, "Té menta-poleo")
+        Productos("cafe", 1.5, "Café normal"),
+        Productos("napolitana", 2.5, "Napolitana de chocolate"),
+        Productos("te", 2.8, "Té menta-poleo")
     )
-    LazyColumn(modifier = Modifier.padding(35.dp)) {
-        items(listaProductos) {
-            Card(modifier = Modifier.fillMaxWidth().padding(10.dp)) {
-                Column() {
-                    Row(modifier = Modifier.padding(8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Text("Producto: ${it.producto}")
-                        Text("Precio: ${it.precio}")
-                        Text(it.descripcion)
-                    }
 
-                    Button(onClick = { seleccion = it.descripcion }) {
-                        Text("Seleccionar:")
+    Column(modifier = Modifier.padding(25.dp)) {
+        // Lista vertical eficiente: solo renderiza en pantalla los elementos visibles
+        LazyColumn(modifier = Modifier.padding(35.dp)) {
+            items(listaProductos) { producto ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                ) {
+                    Column {
+                        Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                            Text("Producto: ${producto.producto}")
+                            Text("precio: ${producto.precio}")
+                            Text(producto.descripcion)
+                        }
+                        // Evento de clic: actualiza el estado 'seleccion' con el producto pulsado
+                        Button(onClick = { seleccion = producto.descripcion }) {
+                            Text("Seleccionar")
+                        }
                     }
                 }
-
             }
+        }
+
+        // Este texto lee el estado 'seleccion' y se actualiza automáticamente al pulsar un botón
+        Text("Pruducto seleccionado: $seleccion")
+    }
+}
+
+@Composable
+fun TarjetaProducto(p: Productos) {
+
+    Card(modifier = Modifier.fillMaxWidth().padding(5.dp)) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            modifier = Modifier.padding(15.dp))
+        {
+            // Nombre + precio
+            Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                Text(p.producto, fontWeight = FontWeight.Bold)
+                Text("${p.precio}€")
+            }
+            // Descripcion
+            Text(p.descripcion)
         }
     }
 
-}
-
-
-
-@Preview(showBackground = true)
-@Composable
-fun PantallaPreview() {
-    DataClasesTheme {
-        PantallaPedido()
-    }
 }
